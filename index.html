@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kremote - Control made easy</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Keymote" />
+    <meta name="apple-mobile-web-app-title" content="Keymote" />
+    <meta name="theme-color" content="#303f9f" />
+    <meta name="msapplication-navbutton-color" content="#303f9f" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="msapplication-starturl" content="/" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="icon" href="icon.png" />
+    <link rel="apple-touch-icon" href="icon.png" />
+  </head>
+  <body oncontextmenu="return false;">
+    <div id="controllerPage">
+      <div class="container">
+        <button class="key" id="up">
+          <img src="./fa-icons/chevron-up-solid.svg" alt="" />
+        </button>
+        <div class="row">
+          <button class="key" id="left">
+            <img src="./fa-icons/chevron-left-solid.svg" alt="" />
+          </button>
+          <button class="key" id="middle">
+            <img src="./fa-icons/dot-circle-regular.svg" alt="" />
+          </button>
+          <button class="key" id="right">
+            <img src="./fa-icons/chevron-right-solid.svg" alt="" />
+          </button>
+        </div>
+
+        <button class="key" id="down">
+          <img src="./fa-icons/chevron-down-solid.svg" alt="" />
+        </button>
+      </div>
+    </div>
+    <div id="loginPage">
+      <div class="connection-mode-overlay">
+        <div class="connection-mode-container">
+          <span id="lanBtn" class="active">LAN</span>
+          <span id="wanBtn">WAN</span>
+        </div>
+      </div>
+      
+
+      <div class="scanner-container">
+        <div class="animated-scanner-container">
+          <span></span>
+        </div>
+        <video muted playsinline id="qrVideo"></video>
+      </div>
+
+      <div class="input-container">
+        <h3>Enter Login Code</h3>
+        <input
+          id="loginCode"
+          type="number"
+          onKeyPress="if(this.value.length==6) return false;"
+        />
+      </div>
+    </div>
+
+    <script src="./hammer.min.js"></script>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
