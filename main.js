@@ -1,4 +1,8 @@
-import "./scanner.js"
+import QrScanner from "./qr-scanner.min.js"; // if using plain es6 import
+QrScanner.WORKER_PATH = "./qr-scanner-worker.min.js";
+
+const qrVideo = document.querySelector("#qrVideo");
+const loginCode = document.querySelector("#loginCode");
 
 const container = document.querySelector(".container");
 const keys = document.querySelectorAll(".key");
@@ -9,8 +13,6 @@ const keys = document.querySelectorAll(".key");
 //   });
 // }
 
-window.scrollY(50);
-
 window.oncontextmenu = function(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -19,12 +21,15 @@ window.oncontextmenu = function(event) {
 
 let ws;
 let wasSocketConnected = false;
-const connectToServer = () => {
-  ws = new WebSocket("ws://192.168.31.94:5976/350335");
 
-  ws.onopen(e => {
+const connectToServer = info => {
+  const port = 5976;
+
+  ws = new WebSocket(`wss://${info.ip}:${port}/${info.code}`);
+
+  ws.onopen = e => {
     wasSocketConnected = true;
-  });
+  };
 
   ws.onclose = e => {
     console.log(
@@ -44,7 +49,15 @@ const connectToServer = () => {
   };
 };
 
-connectToServer();
+const qrScanner = new QrScanner(qrVideo, result => {
+  console.log("decoded qr code:", result);
+  const info = JSON.parse(result);
+  connectToServer(info);
+
+  loginCode.value = info.code;
+});
+
+QrScanner.hasCamera().then(qrScanner.start());
 
 // Create a manager to manager the element
 const hammertime = new Hammer.Manager(container);
