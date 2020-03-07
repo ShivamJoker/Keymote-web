@@ -13,6 +13,10 @@ const keys = document.querySelectorAll(".key");
 //   });
 // }
 
+loginCode.addEventListener("mousewheel", e => {
+  e.preventDefault();
+});
+
 window.oncontextmenu = function(event) {
   event.preventDefault();
   event.stopPropagation();
