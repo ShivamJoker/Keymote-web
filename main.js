@@ -19,6 +19,19 @@ window.oncontextmenu = function(event) {
   return false;
 };
 
+
+
+// disable mousewheel on a input number field when in focus
+// (to prevent Cromium browsers change the value when scrolling)
+$(".input-container").on('focus', "input", function (e) {
+  $(this).on('wheel.disableScroll', function (e) {
+    e.preventDefault()
+  })
+})
+$(".input-container").on('blur', "input", function (e) {
+  $(this).off('wheel.disableScroll')
+})
+
 let ws;
 let wasSocketConnected = false;
 
