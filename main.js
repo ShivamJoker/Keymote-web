@@ -1,9 +1,10 @@
-
 import QrScanner from "./qr-scanner.min.js"; // if using plain es6 import
 QrScanner.WORKER_PATH = "./qr-scanner-worker.min.js";
 
 const qrVideo = document.querySelector("#qrVideo");
 const loginCode = document.querySelector("#loginCode");
+const controllerPage = document.querySelector("#controllerPage");
+const loginPage = document.querySelector("#loginPage");
 
 const container = document.querySelector(".container");
 const keys = document.querySelectorAll(".key");
@@ -25,15 +26,16 @@ window.oncontextmenu = function(event) {
 let ws;
 let wasSocketConnected = false;
 
-const connectToServer = info => {
+const lanServer = info => {
+  var group = "keymote";
+  var ip = info.ip;
+  ws = new WebSocket('ws://'+ ip+ ':7698');
 
-  ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${info.code}`);
-
-  ws.onopen = e => {
-    wasSocketConnected = true;
-  };
-
-  ws.onclose = e => {
+  ws.onerror = function (e) {
+    console.error("Socket encountered error: ", e.message, "Closing socket");
+    ws.close();
+  }
+  ws.onclose = function (e) {
     console.log(
       "Socket is closed. Reconnect will be attempted in 1 second.",
       e.reason
@@ -43,27 +45,80 @@ const connectToServer = info => {
         connectToServer();
       }, 1000);
     }
-  };
+  }
+  ws.onopen = function () {
+    console.log("Connected!"); 
+    wasSocketConnected = true;
+    controllerPage.style.display = "block";
+    loginPage.style.display = "none";
+    qrScanner.stop();
+  }
+  ws.onmessage = function (ms) {
+    console.log("received: %s", ms.data);
 
-  ws.onerror = err => {
-    console.error("Socket encountered error: ", err.message, "Closing socket");
-    ws.close();
-  };
-
-  ws.onmessage = e => {
-    console.log(req.url);
-    const keyInfo = JSON.parse(e.data);
-    simulateKey(keyInfo, config.preset);
-    console.log("received: %s", e.data);
-  };
+  }
+  function send(msg) {
+    ws.send(JSON.stringify({ msg: msg }));
+  }
+  function broadcast(msg, room) {
+    ws.send(JSON.stringify({ room: room, msg: msg }))
+  }
+  function join(room) {
+    ws.send(JSON.stringify({ join: room }));
+  }
+  function bjoin() {
+    //alert(group);
+    join(group);
+  }
+  bjoin();
+  
 };
+
+// const connectToServer = info => {
+  
+//   console.log(info)
+
+//   ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${info.code}`);
+
+//   console.log(info.code);
+//   ws.onopen = e => {
+//     wasSocketConnected = true;
+//     controllerPage.style.display = "block";
+//     loginPage.style.display = "none";
+//   };
+
+//   ws.onclose = e => {
+//     console.log(
+//       "Socket is closed. Reconnect will be attempted in 1 second.",
+//       e.reason
+//     );
+//     if (wasSocketConnected) {
+//       setTimeout(() => {
+//         connectToServer();
+//       }, 1000);
+//     }
+//   };
+
+//   ws.onerror = err => {
+//     console.error("Socket encountered error: ", err.message, "Closing socket");
+//     ws.close();
+//   };
+
+//   ws.onmessage = e => {
+//     const keyInfo = JSON.parse(e.data);
+//     simulateKey(keyInfo, config.preset);
+//     console.log("received: %s", e.data);
+//   };
+// };
+
 
 const qrScanner = new QrScanner(qrVideo, result => {
   console.log("decoded qr code:", result);
   const info = JSON.parse(result);
-  connectToServer(info);
-
+  // connectToServer(info);
+  lanServer(info);
   loginCode.value = info.code;
+  qrScanner.stop();
 });
 
 QrScanner.hasCamera().then(qrScanner.start());
