@@ -29,7 +29,7 @@ let wasSocketConnected = false;
 const connectToServer = info => {
   const port = 5976;
 
-  ws = new WebSocket(`wss://${info.ip}:${port}/${info.code}`);
+  ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${info.code}`);
 
   ws.onopen = e => {
     wasSocketConnected = true;
