@@ -12,11 +12,9 @@ const keys = document.querySelectorAll(".key");
 //     console.log("Service Worker Registered");
 //   });
 // }
-
 loginCode.addEventListener("mousewheel", e => {
   e.preventDefault();
 });
-
 window.oncontextmenu = function(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -27,9 +25,8 @@ let ws;
 let wasSocketConnected = false;
 
 const connectToServer = info => {
-  const port = 5976;
 
-  ws = new WebSocket(`wss://${info.ip}:${port}/${info.code}`);
+  ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${info.code}`);
 
   ws.onopen = e => {
     wasSocketConnected = true;
@@ -51,6 +48,13 @@ const connectToServer = info => {
     console.error("Socket encountered error: ", err.message, "Closing socket");
     ws.close();
   };
+
+  ws.on("message", message => {
+    console.log(req.url);
+    const keyInfo = JSON.parse(message);
+    simulateKey(keyInfo, config.preset);
+    console.log("received: %s", message);
+  });
 };
 
 const qrScanner = new QrScanner(qrVideo, result => {
