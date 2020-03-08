@@ -49,12 +49,12 @@ const connectToServer = info => {
     ws.close();
   };
 
-  ws.on("message", message => {
+  ws.onmessage = e => {
     console.log(req.url);
-    const keyInfo = JSON.parse(message);
+    const keyInfo = JSON.parse(e.data);
     simulateKey(keyInfo, config.preset);
-    console.log("received: %s", message);
-  });
+    console.log("received: %s", e.data);
+  };
 };
 
 const qrScanner = new QrScanner(qrVideo, result => {
