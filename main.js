@@ -23,19 +23,37 @@ window.oncontextmenu = function(event) {
   return false;
 };
 
-let ws;
+let wss;
 let wasSocketConnected = false;
 
 const lanServer = info => {
-  var group = "keymote";
-  var ip = info.ip;
-  ws = new WebSocket('ws://'+ ip+ ':7698');
-
-  ws.onerror = function (e) {
-    console.error("Socket encountered error: ", e.message, "Closing socket");
-    ws.close();
+  function send(msg) {
+    wss.send(JSON.stringify({ msg: msg }));
   }
-  ws.onclose = function (e) {
+  function broadcast(msg, room) {
+    wss.send(JSON.stringify({ room: room, msg: msg }))
+  }
+  function join(room) {
+    wss.send(JSON.stringify({ join: room }));
+  }
+  function bjoin() {
+    //alert(group);
+    join(group);
+  }
+  
+  var ip = info.ip;
+  var code = info.code;
+  var group = code;
+  
+  // wss = new WebSocket('wss://'+ ip+ ':7698');
+
+  wss = new WebSocket('wss://keymote.creativeshi.com/ws/' + code);
+
+  wss.onerror = function (e) {
+    console.error("Socket encountered error: ", e.message, "Closing socket");
+    wss.close();
+  }
+  wss.onclose = function (e) {
     console.log(
       "Socket is closed. Reconnect will be attempted in 1 second.",
       e.reason
@@ -46,31 +64,18 @@ const lanServer = info => {
       }, 1000);
     }
   }
-  ws.onopen = function () {
+  wss.onopen = function () {
     console.log("Connected!"); 
     wasSocketConnected = true;
     controllerPage.style.display = "block";
     loginPage.style.display = "none";
+    bjoin();
     qrScanner.stop();
+    broadcast("hi", group);
   }
-  ws.onmessage = function (ms) {
+  wss.onmessage = function (ms) {
     console.log("received: %s", ms.data);
-
   }
-  function send(msg) {
-    ws.send(JSON.stringify({ msg: msg }));
-  }
-  function broadcast(msg, room) {
-    ws.send(JSON.stringify({ room: room, msg: msg }))
-  }
-  function join(room) {
-    ws.send(JSON.stringify({ join: room }));
-  }
-  function bjoin() {
-    //alert(group);
-    join(group);
-  }
-  bjoin();
   
 };
 
@@ -78,16 +83,16 @@ const lanServer = info => {
   
 //   console.log(info)
 
-//   ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${info.code}`);
+//   wss = new WebSocket(`wsss://keymote.creativeshi.com/wss/${info.code}`);
 
 //   console.log(info.code);
-//   ws.onopen = e => {
+//   wss.onopen = e => {
 //     wasSocketConnected = true;
 //     controllerPage.style.display = "block";
 //     loginPage.style.display = "none";
 //   };
 
-//   ws.onclose = e => {
+//   wss.onclose = e => {
 //     console.log(
 //       "Socket is closed. Reconnect will be attempted in 1 second.",
 //       e.reason
@@ -99,25 +104,26 @@ const lanServer = info => {
 //     }
 //   };
 
-//   ws.onerror = err => {
+//   wss.onerror = err => {
 //     console.error("Socket encountered error: ", err.message, "Closing socket");
-//     ws.close();
+//     wss.close();
 //   };
 
-//   ws.onmessage = e => {
+//   wss.onmessage = e => {
 //     const keyInfo = JSON.parse(e.data);
 //     simulateKey(keyInfo, config.preset);
 //     console.log("received: %s", e.data);
 //   };
 // };
 
-
+var code = undefined;
 const qrScanner = new QrScanner(qrVideo, result => {
   console.log("decoded qr code:", result);
   const info = JSON.parse(result);
   // connectToServer(info);
   lanServer(info);
   loginCode.value = info.code;
+  code = info.code;
   qrScanner.stop();
 });
 
@@ -149,7 +155,7 @@ const onlongtouch = msg => {
   console.log("long touch");
 
   const sendMsgRepeatedly = () => {
-    ws.send(JSON.stringify(msg));
+    wss.send(JSON.stringify(msg));
     msgTimer = setTimeout(sendMsgRepeatedly, 100);
   };
   sendMsgRepeatedly();
@@ -178,8 +184,8 @@ keys.forEach(el => {
   ) {
     el.addEventListener("touchstart", () => {
       //send the id of element up,down,left right
-      const keyInfo = { key: el.id, event: "down" };
-      ws.send(JSON.stringify(keyInfo));
+      const keyInfo = { room: code, key: el.id, event: "down" };
+      wss.send(JSON.stringify(keyInfo));
       touchstart(keyInfo);
     });
 
@@ -187,20 +193,20 @@ keys.forEach(el => {
       touchend();
       window.navigator.vibrate(10);
       //send the id of element up,down,left right
-      const keyInfo = { key: el.id, event: "up" };
-      ws.send(JSON.stringify(keyInfo));
+      const keyInfo = { room: code, room: code, key: el.id, event: "up" };
+      wss.send(JSON.stringify(keyInfo));
     });
   } else {
     el.addEventListener("mousedown", () => {
       //send the id of element up,down,left right
-      const keyInfo = { key: el.id, event: "down" };
-      ws.send(JSON.stringify(keyInfo));
+      const keyInfo = { room: code, key: el.id, event: "down" };
+      wss.send(JSON.stringify(keyInfo));
     });
 
     el.addEventListener("mouseup", () => {
       //send the id of element up,down,left right
-      const keyInfo = { key: el.id, event: "up" };
-      ws.send(JSON.stringify(keyInfo));
+      const keyInfo = { room: code, key: el.id, event: "up" };
+      wss.send(JSON.stringify(keyInfo));
     });
   }
 });
