@@ -3,6 +3,8 @@ QrScanner.WORKER_PATH = "./qr-scanner-worker.min.js";
 
 const qrVideo = document.querySelector("#qrVideo");
 const loginCode = document.querySelector("#loginCode");
+const controllerPage = document.querySelector("#controllerPage");
+const loginPage = document.querySelector("#loginPage");
 
 const container = document.querySelector(".container");
 const keys = document.querySelectorAll(".key");
@@ -27,12 +29,17 @@ let ws;
 let wasSocketConnected = false;
 
 const connectToServer = info => {
-  const port = 5976;
+  
+  console.log(info)
 
   ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${info.code}`);
 
   ws.onopen = e => {
     wasSocketConnected = true;
+    controllerPage.style.display = "block";
+    loginPage.style.display = "none";
+
+
   };
 
   ws.onclose = e => {
@@ -59,6 +66,7 @@ const qrScanner = new QrScanner(qrVideo, result => {
   connectToServer(info);
 
   loginCode.value = info.code;
+  qrScanner.stop()
 });
 
 QrScanner.hasCamera().then(qrScanner.start());
