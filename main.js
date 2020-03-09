@@ -1,11 +1,12 @@
 import QrScanner from "./libs/qr-scanner.min.js"; // if using plain es6 import
-QrScanner.WORKER_PATH = "./qr-scanner-worker.min.js";
+import './libs/hammer.min.js'
+QrScanner.WORKER_PATH = "./libs/qr-scanner-worker.min.js";
 
 const qrVideo = document.querySelector("#qrVideo");
 const loginCode = document.querySelector("#loginCode");
 const controllerPage = document.querySelector("#controllerPage");
 const loginPage = document.querySelector("#loginPage");
-
+const animatedScanner = document.querySelector(".animated-scanner-container");
 const container = document.querySelector(".container");
 const keyBtns = document.querySelectorAll(".key");
 
@@ -63,11 +64,21 @@ const qrScanner = new QrScanner(qrVideo, result => {
   qrScanner.stop();
 });
 
-QrScanner.hasCamera().then(qrScanner.start());
+QrScanner.hasCamera().then(() => {
+  qrScanner.start();
+  animatedScanner.style.display = "block";
+  //also show the animated scanner
+});
+
+loginCode.addEventListener("click", () => {
+  //stop the scan
+  qrScanner.stop();
+  animatedScanner.style.display = "none";
+
+});
 
 loginCode.addEventListener("keypress", e => {
   //stop the scan
-  qrScanner.stop();
   //if user presses enter then login
   if (e.key === "Enter") {
     loginInfo = { code: loginCode.value };
@@ -122,12 +133,11 @@ const touchend = () => {
 };
 
 keyBtns.forEach(el => {
-
-    el.addEventListener("click", () => {
-      //send the id of element up,down,left right
-      let keyInfo = { key: el.id, event: "down" };
-      ws.send(JSON.stringify(keyInfo));
-      keyInfo = { key: el.id, event: "up" };
-      ws.send(JSON.stringify(keyInfo));
-    });
+  el.addEventListener("click", () => {
+    //send the id of element up,down,left right
+    let keyInfo = { key: el.id, event: "down" };
+    ws.send(JSON.stringify(keyInfo));
+    keyInfo = { key: el.id, event: "up" };
+    ws.send(JSON.stringify(keyInfo));
+  });
 });

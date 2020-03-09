@@ -16,6 +16,7 @@ html {
   height: 100%;
   user-select: none;
   background: var(--light-color);
+  overflow: hidden;
 }
 
 * {
@@ -87,43 +88,13 @@ html.key,
   flex-direction: column;
   align-items: center;
   color: #fff;
-  position: relative;
+  /* position: relative; */
 }
 
-.connection-mode-overlay {
-  position: absolute;
-  width: 100%;
-  z-index: 11;
-  background: var(--transparent-color);
-  display: flex;
-  justify-content: center;
-}
 
-.connection-mode-container {
-  width: 120px;
-  height: 25px;
-  margin: 10px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  color: var(--light-color);
-}
 
-.connection-mode-container span {
-  width: 50%;
-  height: 100%;
-  text-align: center;
-  line-height: 25px;
-  font-size: 16px;
-  cursor: pointer;
-  color: #fff;
-}
-
-.connection-mode-container .active {
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--dark-color);
+.scanner-container{
+  min-height: 500px;
 }
 
 .animated-scanner-container {
@@ -136,6 +107,7 @@ html.key,
   top: 40%;
   right: 50%;
   transform: translate(50%, -50%);
+  display: none;
 }
 
 .animated-scanner-container span {
