@@ -1,21 +1,2 @@
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open("v1").then(cache => {
-      return cache.addAll([
-        "./index.html",
-        "./style.css",
-        "./main.js",
-        "./icons/chevron-up-solid.svg",
-        "./icons/chevron-left-solid.svg",
-        "./icons/dot-circle-regular.svg",
-        "./icons/chevron-right-solid.svg",
-        "./icons/chevron-down-solid.svg",
-        "./hammer.min.js"
-      ]);
-    })
-  );
-});
-
-// self.addEventListener("fetch", event => {
-//   event.respondWith(caches.match(event.request));
-// });
+if(!self.define){const e=e=>{"require"!==e&&(e+=".js");let c=Promise.resolve();return i[e]||(c=new Promise(async c=>{if("document"in self){const i=document.createElement("script");i.src=e,document.head.appendChild(i),i.onload=c}else importScripts(e),c()})),c.then(()=>{if(!i[e])throw new Error(`Module ${e} didn’t register its module`);return i[e]})},c=(c,i)=>{Promise.all(c.map(e)).then(e=>i(1===e.length?e[0]:e))},i={require:Promise.resolve(c)};self.define=(c,r,n)=>{i[c]||(i[c]=Promise.resolve().then(()=>{let i={};const s={uri:location.origin+c.slice(1)};return Promise.all(r.map(c=>{switch(c){case"exports":return i;case"module":return s;default:return e(c)}})).then(e=>{const c=n(...e);return i.default||(i.default=c),i})}))}}define("./sw.js",["./workbox-838c7b54"],(function(e){"use strict";self.addEventListener("message",e=>{e.data&&"SKIP_WAITING"===e.data.type&&self.skipWaiting()}),e.precacheAndRoute([{url:"fa-icons/chevron-down-solid.svg",revision:"2c0862a67bfb8773d52c7833e17cd5ca"},{url:"fa-icons/chevron-left-solid.svg",revision:"dc880f17456d5cad7f07d83554c22b9b"},{url:"fa-icons/chevron-right-solid.svg",revision:"1fce70541cd225507e29c233e23f2cb2"},{url:"fa-icons/chevron-up-solid.svg",revision:"3b30c82204fe750dcaa3c5113585f6ee"},{url:"fa-icons/dot-circle-regular.svg",revision:"71c472f907ac4e1759c87488be6421d0"},{url:"icon.png",revision:"9433c63537ba5f2b5ac48fef05aff6c8"},{url:"icon.svg",revision:"71dd5a66fc9b67203061f3aa8e17dc6f"},{url:"icons/icon-128x128.png",revision:"7ccaea22c6c65fc36d4a09f0814839ff"},{url:"icons/icon-144x144.png",revision:"e5c552dc24cde39823930a46423900ac"},{url:"icons/icon-152x152.png",revision:"2c8579285918453665ad1e69d96121ba"},{url:"icons/icon-192x192.png",revision:"c7144d15d8772c835be876865545f5bb"},{url:"icons/icon-384x384.png",revision:"2a4b8ffd025ae840617312359775cb56"},{url:"icons/icon-512x512.png",revision:"c42fabf0c0c6f1a32009a13483f4a4ec"},{url:"icons/icon-72x72.png",revision:"875ad4fb5f5a4f634a4334a63871c3ef"},{url:"icons/icon-96x96.png",revision:"c66c2680e93935b4435186a469211f49"},{url:"index.html",revision:"959eb9b5890322dde8562847fb837975"},{url:"libs/hammer.min.js",revision:"dd16fba4974cfe81d9075c6367474cb2"},{url:"libs/qr-scanner-worker.min.js",revision:"f92d906eb31364fb8a41e681a0492fc3"},{url:"libs/qr-scanner.min.js",revision:"b40d7d1f94416ab7ebaa2735e36a64ca"},{url:"libs/scanner.js",revision:"d41d8cd98f00b204e9800998ecf8427e"},{url:"main.js",revision:"53158103d7a30e56b3677df78cdb8397"},{url:"manifest.json",revision:"dcfd0a2b9753666f7c20c5aafb7ccba2"},{url:"Roboto-Regular.ttf",revision:"11eabca2251325cfc5589c9c6fb57b46"},{url:"style.css",revision:"a4ac022921091111cec51975ba3b9bac"}],{})}));
+//# sourceMappingURL=sw.js.map

@@ -1,3 +1,5 @@
+import 'https://storage.googleapis.com/workbox-cdn/releases/5.0.0/workbox-sw.js';
+
 import QrScanner from "./libs/qr-scanner.min.js"; // if using plain es6 import
 import './libs/hammer.min.js'
 QrScanner.WORKER_PATH = "./libs/qr-scanner-worker.min.js";
@@ -10,11 +12,17 @@ const animatedScanner = document.querySelector(".animated-scanner-container");
 const container = document.querySelector(".container");
 const keyBtns = document.querySelectorAll(".key");
 
-// if ("serviceWorker" in navigator) {
-//   navigator.serviceWorker.register("/sw.js").then(function() {
-//     console.log("Service Worker Registered");
-//   });
-// }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").then(function() {
+    console.log("Service Worker Registered");
+  });
+}
+
+if (workbox) {
+  console.log(`Yay! Workbox is loaded 🎉`);
+} else {
+  console.log(`Boo! Workbox didn't load 😬`);
+}
 
 window.oncontextmenu = function(event) {
   event.preventDefault();
