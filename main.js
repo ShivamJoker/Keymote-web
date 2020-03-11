@@ -29,7 +29,7 @@ let loginInfo;
 const connectToServer = () => {
   console.log(loginInfo);
 
-  ws = new WebSocket(`wss://keymote.creativeshi.com/wss/${loginInfo.code}`);
+  ws = new WebSocket(`wss://keymote.creativeshi.com/ws/${loginInfo.code}`);
 
   ws.onopen = e => {
     wasSocketConnected = true;
